@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javascript</title>
+</head>
+
+<body>
+    <p id="date"></p>
+    <p id="last-modified">Ultima modifica: </p>
+
+    <script>
+        if (document.readyState == 'loading') {
+            let firstName = prompt("Enter first name: ");
+            let lastName = prompt("Enter last name: ");
+            alert(`Benvenuto ${firstName} ${lastName}`);
+        }
+
+        let currentDate = new Date();
+        document.querySelector("#date").innerText = currentDate.toLocaleDateString('it-IT', { day: "numeric", month: "long", year: "numeric" });
+
+        document.querySelector("#last-modified").innerText += document.lastModified;
+
+        dayPeriod = (currentDate.getHours() >= 5 && currentDate.getHours() < 12) ? "buongiorno"
+            : currentDate.getHours() < 18 ? "buon pomeriggio"
+                : "buonasera";
+
+        alert(dayPeriod);
+
+    </script>
+</body>
+
+</html>

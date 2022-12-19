@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+    <script src="https://code.jquery.com/jquery-3.6.2.min.js"
+        integrity="sha256-2krYZKh//PcchRtd+H+VyyQoZ/e3EcrkxhM8ycwASPA=" crossorigin="anonymous"></script>
+    <style>
+        #pwd-message,
+        #confirm-message {
+            display: none;
+        }
+
+        input {
+            margin: .7em;
+        }
+
+        #pwd-message * {
+            margin: 0.2em;
+        }
+
+        .valid {
+            color: green;
+        }
+
+        .valid::before {
+            content: "✔ ";
+        }
+
+        .invalid {
+            color: red;
+        }
+
+        .invalid::before {
+            content: '✖ '
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        <fieldset>
+            <legend>Email & password</legend>
+            <label for="email">Email: </label>
+            <input type="text" placeholder="email" id="email"><br>
+            <label for="password">Immetti la password: </label>
+            <input type="password" placeholder="password" id="password"><br>
+            <div id="pwd-message">
+                <h3>La password deve contenere:</h3>
+                <p id="capital" class="invalid">Una lettera <b>MAIUSCOLA</b></p>
+                <p id="number" class="invalid">Un <b>numero</b></p>
+                <p id="length" class="invalid">Almeno <b>12</b> caratteri</p>
+                <p id="special" class="invalid">Un carattere <b>speciale</b></p>
+            </div>
+
+            <label for="password-confirm">Conferma password: </label>
+            <input type="password" placeholder="password" id="password-confirm"><br>
+            <div id="confirm-message">
+                <p id="password-match" class="invalid">Le password non coincidono</p>
+            </div>
+            <input type="submit" value="Conferma">
+        </fieldset>
+    </form>
+    <p id="validation-result"></p>
+</body>
+
+<script>
+    //validazione dei campi al submit
+    $("form").submit(function (e) {
+        e.preventDefault();
+        $("#validation-result").text("");
+        if (!$("#email").val().match(/@/g))
+            $("#validation-result").text("Email deve contenere @. ");
+        if (!$("#password").val().match(/[A-Z\d!"#\$%&'\(\)\*\+,-.\/:;<=>\?@\[\]\^_`\{\}\|~]/g) || $("#password").val().length < 12)
+            $("#validation-result").text($("#validation-result").text() + "La password non rispetta i requisiti. ");
+        if ($("#password").val() != $("#password-confirm").val())
+            $("#validation-result").text($("#validation-result").text() + "Le password non coincidono.");
+
+        //se non ci sono errori, la validazione è riuscita    
+        if ($("#validation-result").text() == "")
+            $("#validation-result").text("Validazione Riuscita!!!");
+    })
+
+    //validazione prima password durante scrittura
+    $("#password")
+        .focus(function () {
+            $("#pwd-message").css("display", "block");
+            $(this).on("input", function () {
+                // Validazione maiuscola
+                if ($(this).val().match(/[A-Z]/g)) $("#capital").removeClass("invalid").addClass("valid");
+                else $("#capital").removeClass("valid").addClass("invalid");
+
+                // Validazione numero
+                if ($(this).val().match(/\d/g)) $("#number").removeClass("invalid").addClass("valid");
+                else $("#number").removeClass("valid").addClass("invalid");
+
+                // Validazione lunghezza
+                if ($(this).val().length >= 12) $("#length").removeClass("invalid").addClass("valid");
+                else $("#length").removeClass("valid").addClass("invalid");
+
+                // Validazione carattere speciale
+                if ($(this).val().match(/[!"#\$%&'\(\)\*\+,-.\/:;<=>\?@\[\]\^_`\{\}\|~]/g)) $("#special").removeClass("invalid").addClass("valid");
+                else $("#special").removeClass("valid").addClass("invalid");
+            })
+        }).blur(function () {
+            $("#pwd-message").css("display", "none")
+        });
+
+
+    //validazione seconda password durante scrittura
+    $("#password-confirm")
+        .on('focus input', function () {
+            $("#confirm-message").css("display", "block");
+            // Controlla se la password di conferma coincide con la password
+            if ($(this).val() == $("#password").val()) $("#password-match").removeClass("invalid").addClass("valid").text("Le password coincidono");
+            else $("#password-match").removeClass("valid").addClass("invalid");
+        }).blur(function () {
+            $("#confirm-message").css("display", "none")
+        });
+</script>
+
+</html>
